@@ -1,3 +1,2 @@
-# Algorithms Added
-------------------
-###Dijkstra's Shortest Path Finding Algorithm
+## Algorithms Added
+1. Dijkstra's Shortest Path Finding Algorithm
