@@ -47,7 +47,7 @@ int minVertex(vector<int> & dist, set<int> & nvisited){
     return minValue;
 }
 
-// Implementation of Dijkstra's algorthm.
+// Implementation of Dijkstra's algorthm for directed edges.
 // Time Completxity O(|V|^2)
 // Space Completxity O(|V|^2)
 // Starting vertex is considered to be 1 and destination vertex is N
@@ -59,22 +59,28 @@ int main(void){
     vector<int> distance(N+1);
     vector<int> previous(N+1);
     set<int> notvisited;
+    int source, sink;
 
     for(int i=0; i<M; i++){
         int a,b,c;
         scanf("%d %d %d",&a,&b,&c);
         graph[a].push_back(make_pair(b,c));
-        graph[b].push_back(make_pair(a,c));
+        // Uncomment the following line to make it for undirected graphs
+       // graph[b].push_back(make_pair(a,c));
     }
     for(int i=1; i<=N; i++){
         distance[i] = INF;
         previous[i] = 0;
         notvisited.insert(i);
     }
-    distance[1] = 0;
+
+    ss(source,sink);
+
+    distance[source] = 0;
+
     while(!notvisited.empty()){
         int current = minVertex(distance, notvisited);
-        if (current == N)
+        if (current == sink)
             break;
         for(int i=0; i<graph[current].size(); i++){
             if (distance[current]+graph[current][i].second < distance[graph[current][i].first]){
@@ -83,10 +89,10 @@ int main(void){
             }
         }
     }
-    int path = N;
-    while(path != 1){
+    int path = sink;
+    while(path != source){
         printf("%d ",path);
         path = previous[path];
     }
-    printf("1\n");
+    printf("%d\n",source);
 }
