@@ -1,2 +1,3 @@
-## Algorithms Added
-1. Dijkstra's Shortest Path Finding Algorithm
+## Contest Added
+1. Shaastra 2012
+2. Codeforces Round 159
