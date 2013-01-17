@@ -14,112 +14,99 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+
 using namespace std;
 
-/* Complete the function below to print 2 integers separated by a single space which will be your next move 
-   */
+int magic[] = {8,3,4,1,5,9,6,7,2};
+int rmagic[] = {3,8,1,2,4,6,7,0,5};
 
 char opp(char c){
     if (c == 'X')
         return 'O';
     else
-        return 'O';
+        return 'X';
 }
 
-int win(char player, vector <string> board) {
-    int wincount = 0;
-    
-    // Test along the rows
-    for(int i=0; i<3; i++) { 
-        if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] == player)
-            wincount++;
+int makeWin(char player, vector<string> board, vector<int> moves) {
+    int move = -1;
+
+    for(int i=0; i<moves.size() && move == -1; i++){
+      for(int j=0; j<moves.size() && move == -1; j++){
+		// Not a valid collinear move
+		if (i == j)
+			continue;
+		int place = 15-moves[i]-moves[j];
+		// Not a collinear move
+		if (place <= 0 || place > 9 || place == moves[i] || place == moves[j])
+			continue;
+		
+		place = rmagic[place-1];
+		if (board[place/3][place%3] == '_')
+		move = place;
+      }
     }
-    
-    // Test along the columns
-    for(int i=0; i<3; i++) { 
-        if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] == player)
-            wincount++;
-    }
-    
-    // Test along the diagonals
-        if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] == player)
-            wincount++;    
-        if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] == player)
-            wincount++;
-    
-    return wincount;
-    
+    return move;
 }
 
-int bestMove(char player, vector <string> board) {
-    vector< pair<int,int> > moves;
-    for(int i=0; i<3; i++){
-        for(int j=0; j<3; j++){
-            if (board[i][j] == '_')
-                moves.push_back(make_pair(i,j));
-        }
-    }
-    
-    if (win(opp(player), board) || moves.size() == 0)
-        return 0;
-    
-    int wincount = 0;
-    for(int i=0; i<moves.size(); i++) {
-        board[moves[i].first][moves[i].second] = player;
-        int wins = win(player, board);
-        if (wins == 0){
-            for(int j=0; j<moves.size(); j++){
-                if (i == j)
-                    continue;
-                board[moves[j].first][moves[j].second] = opp(player);
-                wincount += bestMove(player, board);
-            }
-        }
-        else{
-            wincount += wins;
-        }
-    }
-    return wincount;
+int makeTwo(char player, vector<string> board) {
+	if (board[1][1] == '_')
+		return 4;
+	else{
+		vector<int> wincount(9,0);
+		vector<int> blockcount(9,0);
+		for(int i=0; i<9; i++){
+			for(int j=0; j<9; j++){
+				if (i == j || board[i/3][i%3] != '_' || board[j/3][j%3] != '_')
+					continue;
+				int place = 15-magic[i]-magic[j];
+				// Not a collinear move
+				if (place <= 0 || place > 9 || place == magic[i] || place == magic[j])
+					continue;
+				place = rmagic[place-1];
+				// Count in how many ways this move can result in win position
+				if (board[place/3][place%3] == player || board[place/3][place%3] == '_')
+					wincount[i]++;
+				// Count in how many ways this move can result in block position
+				if (board[place/3][place%3] == opp(player) || board[place/3][place%3] == '_')
+					blockcount[i]++;
+			}
+		}
+		int move = -1;
+		for(int i=0; i<9; i++){
+			if (move == -1){
+				if (board[i/3][i%3] == '_')
+					move = i;
+			}
+			else{
+				if (wincount[i] > wincount[move])
+					move = i;
+				else if (wincount[i] == wincount[move] && blockcount[i] > blockcount[move])
+					move = i;
+			}	
+		}
+		return move;
+	}
 }
 
+/* Complete the function below to print 2 integers separated by a single space which will be your next move 
+   */
 void nextMove(char player, vector <string> board){
-    vector< pair<int,int> > moves;
-    for(int i=0; i<3; i++){
-        for(int j=0; j<3; j++){
-            if (board[i][j] == '_')
-                moves.push_back(make_pair(i,j));
-        }
-    }
-    
-    vector<int> count(moves.size(), 0);
-    int ans = -1;
-    
-    for(int i=0; i<moves.size(); i++) {
-        board[moves[i].first][moves[i].second] = player;
-        int wins = win(player, board);
-        if (win == 0){
-            for(int j=0; j<moves.size(); j++){
-                if (i == j)
-                    continue;
-                board[moves[j].first][moves[j].second] = opp(player);
-                count[i] += bestMove(player, board);
-            }
-        }
-        else{
-            ans = i;
-            break;
-        }
-    }
-    
-    if (ans = -1){
-        ans = 0;
-        for(int i=1; i<count.size(); i++){
-            if (count[ans] < count[i])
-                ans = i;
-        }
-    }
-    
-    cout<<moves[ans].first<<" "<<moves[ans].second<<endl;
+	vector<int> pmoves, omoves;
+	for(int i=0; i<3; i++){
+		for(int j=0; j<3; j++){
+			if (board[i][j] == player)
+				pmoves.push_back(magic[i*3+j]);
+			else if (board[i][j] == opp(player))
+				omoves.push_back(magic[i*3+j]);
+		}
+	}
+	int move = makeWin(player, board, pmoves);
+	if (move == -1){
+		move = makeWin(opp(player), board, omoves);
+		if (move == -1)
+			move = makeTwo(player, board);
+	}
+	cout<<move/3<<" "<<move%3<<endl;
 }
 
 int main() {

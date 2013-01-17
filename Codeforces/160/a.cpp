@@ -37,7 +37,7 @@
 #define CLEAR(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
-#define PI 3.1415926535897932
+#define PI 3.1415926535897
 
 using namespace std;
 typedef long long ll;
@@ -61,5 +61,26 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-  
+	int n,m;
+	cin>>m;
+	vector<int> d(m);
+	FOR(i,0,m)
+		cin>>d[i];
+	cin>>n;
+	vector<int> price(n);
+	FOR(i,0,n)
+		cin>>price[i];
+	sort(d.begin(), d.end());
+	sort(price.rbegin(), price.rend());
+	int i = 0;
+	int totalsum = 0;
+	while (i < price.size()){
+		for(int j=0; j<d[0] && i < price.size(); j++){
+			totalsum += price[i];
+			i++;
+		}
+		i += 2;
+	}
+	cout<<totalsum<<endl;
+	return 0;
 }

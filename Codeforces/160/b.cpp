@@ -37,7 +37,7 @@
 #define CLEAR(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
-#define PI 3.1415926535897932
+#define PI 3.1415926535897932384626433832795028841971693
 
 using namespace std;
 typedef long long ll;
@@ -59,7 +59,36 @@ int convertString(string s)
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
+double prob[51][51];
+
 int main()
 {
-  
+	int n,p;
+	cin>>n;
+	vector<int> a(n);
+	FOR(i,0,n)
+		cin>>a[i];
+	cin>>p;
+	double ans = 0.0;
+	for(int blocker = 0; blocker < n; blocker++){
+		CLEAR(prob);
+		prob[0][0] = 1.0;
+		for(int i = 0; i < n; i++){
+			if (i == blocker) continue;;
+			int curr = a[i];
+			for(int j = n-2; j >= 0; j--){
+				double pr = (double)(j+1)/(double)(n-j);
+				for(int sum = 0; sum+curr <= p; sum++){
+					prob[j+1][sum+curr] += prob[j][sum]*pr;
+				}
+			}
+		}
+		for(int amt = 0; amt < n; amt++){
+			for(int sum = max(0,p-a[blocker]+1); sum <= p; sum++){
+				ans += amt * prob[amt][sum]/(n-amt);
+			}
+		}
+	}
+	cout<<ans<<endl;
+	return 0;
 }

@@ -61,5 +61,17 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-  
+	int n,k;
+	cin>>n>>k;
+	vector<int> a(n);
+	FOR(i,0,n)
+		cin>>a[i];
+	sort(a.begin(), a.end());
+	if (k > n){
+		cout<<-1<<endl;
+	}
+	else{
+		cout<<a[n-k]<<" "<<a[n-k]<<endl;
+	}
+	return 0;
 }

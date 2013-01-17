@@ -61,5 +61,17 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-  
+	int x,y;
+	FOR(i,0,5){
+		FOR(j,0,5){
+			int a;
+			cin>>a;
+			if (a == 1){
+				x = i;
+				y = j;
+			}
+		}
+	}
+	cout<<abs(2-x)+abs(2-y)<<endl;
+	return 0;
 }

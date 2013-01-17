@@ -61,5 +61,13 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-  
+	int n;
+	cin>>n;
+	vector<int> graph[n+1];
+	for(int i=0; i<n; i++){
+		int a,b;
+		cin>>a>>b;
+		graph[a].push_back(b);
+		graph[b].push_back(a);
+	}
 }
