@@ -8,7 +8,10 @@
 7. Codechef Jan13 Long
 8. Codechef Jan13 Short
 9. Codeforces 162
-10. COdeforces 163
+10. Codeforces 163
+11. Codechef FEB13 Long
+12. Codeforces 174
+13. Codeforces 175
 
 
 ## Library Additions
