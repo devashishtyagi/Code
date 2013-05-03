@@ -51,23 +51,34 @@ string convertInt(int number)
 
 int convertString(string s)
 {
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
+    int num;
+    stringstream sstr(s); // create a stringstream
+    sstr>>num; // push the stream into the num
+    return num;
 }
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	
+	int t;
+	sf(t);
+	while(t--) {
+		int n,k;
+		sf(n); sf(k);
+		vector<int> W(n);
+		int sum = 0;
+		for(int i = 0; i < n; i++){
+			sf(W[i]);
+			sum += W[i];
+		}
+		sort(W.begin(), W.end());
+		int first = 0, last = 0;
+		for(int i = 0; i < k; i++)
+			first += W[i];
+		for(int i = n-k; i < n; i++)
+			last += W[i];
+		pf(max(sum-2*first, 2*last-sum));
+	}
+	return 0;
 }

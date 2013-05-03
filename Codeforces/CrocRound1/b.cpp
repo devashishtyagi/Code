@@ -67,7 +67,73 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
+vector< vector<int> > graph;
+
 int main()
 {
-	
+	int n,m;
+	sf(n); sf(m);
+	vector<int> degree(n, 0);
+	graph.resize(n);
+
+	for(int i = 0; i < m; i++) {
+		int x,y;
+		sf(x); sf(y);
+		x--; y--;
+		graph[x].push_back(y);
+		graph[y].push_back(x);
+		degree[x]++;
+		degree[y]++;
+	}
+
+	bool star = false, ring = false, line = false;
+	// Check for star
+	int degree1 = 0, degree2 = 0;
+	for(int i = 0; i < n; i++) {
+		if (degree[i] == 1)
+			degree1++;
+		else if (degree[i] == n-1)
+			degree2++;
+	}
+	if (degree1 == n-1 && degree2 == 1) {
+		star = true;
+	}
+
+	// Check for ring
+	if (m == n && !star) {
+		int degree2 = 0;
+		for(int i = 0; i < n; i++) {
+			if (degree[i] == 2)
+				degree2++;
+		}
+		if (degree2 == n)
+			ring = true;
+	}
+
+	// Check for line
+	if (m == n-1 && !star && !ring) {
+		int degree2 = 0, degree1 = 0;
+		for(int i = 0; i < n; i++) {
+			if (degree[i] == 2)
+				degree2++;
+			if (degree[i] == 1)
+				degree1++;
+		}
+		if (degree2 == n-2 && degree1 == 2)
+			line = true;
+	}
+
+	if (star) {
+		cout<<"star topology"<<endl;
+	}
+	else if (ring) {
+		cout<<"ring topology"<<endl;
+	}
+	else if (line) {
+		cout<<"bus topology"<<endl;
+	}
+	else {
+		cout<<"unknown topology"<<endl;
+	}
+	return 0;
 }

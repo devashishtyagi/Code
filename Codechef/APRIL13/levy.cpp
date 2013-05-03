@@ -51,23 +51,51 @@ string convertInt(int number)
 
 int convertString(string s)
 {
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
+    int num;
+    stringstream sstr(s); // create a stringstream
+    sstr>>num; // push the stream into the num
+    return num;
 }
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
+int pairs[10001];
+
+void init() {
+	bool prime[10001];
+	vector<int> primelist;
+
+	memset(prime, false, sizeof prime);
+	memset(pairs, 0, sizeof pairs);
+
+	for(int i = 2; i < 10001; i++) {
+		if (!prime[i]) {
+			primelist.push_back(i);
+			int p = i;
+			while(i*p < 10001) {
+				prime[i*p] = true;
+				p++;
+			}
+		}
+	}
+	for(int i = 0; i < primelist.size(); i++) {
+		for(int j = 0; j < primelist.size(); j++) {
+			int n = primelist[i] + 2*primelist[j];
+			if (n < 10001)
+				pairs[n]++;
+		}
+	}
+}
+
 int main()
 {
-	
+	int t;
+	init();
+	sf(t);
+	while(t--) {
+		int n;
+		sf(n);
+		pf(pairs[n]);
+	}
+	return 0;
 }

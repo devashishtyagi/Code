@@ -37,27 +37,52 @@
 #define CLEAR(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
-#define PI 3.1415926535897932
+#define PI 3.1415926535897932384626433832795028841971693993751058209
 
 using namespace std;
 typedef long long ll;
 
-string convertInt(int number)
-{
-   stringstream ss;//create a stringstream
-   ss << number;//add number to the stream
-   return ss.str();//return a string with the contents of the stream
+double first(double w, double h) {
+	double start1 = w/(2.0*(2.0+PI)), end1 = w/(2.0*(1.0+PI));
+	double start2 = h/2.0, end2 = h/4.0;
+	double r;
+	if (start1 >= start2) {
+		r = start2;
+	}
+	else if (end1 <= end2) {
+		r = end1;
+	}
+	else {
+		double a = h*h + w*w;
+		double A = h*(1+PI) - w;
+		double b = 2*A*h;	
+		double c = A*A - w*w;
+		double soln = (-b + sqrt(b*b - 4*a*c))/(2.0*a);
+		r = w/(2.0*(1+PI+soln));
+	}
+	double vol = PI*r*r*h;
+	return vol;
 }
 
-int convertString(string s)
-{
-    int num;
-    stringstream sstr(s); // create a stringstream
-    sstr>>num; // push the stream into the num
-    return num;
+double second(double w, double h) {
+	double begin = w/3.0, end = w/6.0;
+	double flat = h/(2*PI);
+	double vol;
+	if (begin <= flat) {
+		double r = begin;
+		vol = PI*r*r*(w - 2*r);
+	}
+	else if (end > flat) {
+		double r = flat;
+		vol = PI*r*r*(w - 2*r);
+	}
+	else {
+		double r = flat;
+		vol = PI*r*r*(w - 2*r);	
+	}
+	return vol;
 }
 
-int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
@@ -66,10 +91,11 @@ int main()
 	while(t--) {
 		double w, h;
 		scanf("%lf %lf", &w, &h);
-		double r1 = min(w/(2.0+2.0*PI), h/4.0);
-		double vol1 = PI*r1*r1*h;
-		double r2 = min(h/(2.0+2.0*PI), w/4.0);
-		double vol2 = PI*r2*r2*w;
-		printf("%.13lf\n",max(vol1, vol2));
+		double vol = first(w, h);
+		vol = max(vol, second(w, h));
+		vol = max(vol, first(h, w));
+		vol = max(vol, second(h, w));
+		printf("%.16lf\n",vol);
 	}  
+	return 0;
 }

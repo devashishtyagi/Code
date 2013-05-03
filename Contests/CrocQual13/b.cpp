@@ -51,23 +51,52 @@ string convertInt(int number)
 
 int convertString(string s)
 {
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
+    int num;
+    stringstream sstr(s); // create a stringstream
+    sstr>>num; // push the stream into the num
+    return num;
 }
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
+string str;
+vector<string> lexemes;
+
+int extract(int i) {
+	while(i < str.size() && isspace(str[i]))
+		i++;
+	if (i >= str.size())
+		return i;
+	char end = ' ';
+	if (str[i] == '"'){
+		end = '"';
+		i++;
+	}
+	string lexeme;
+	while(i < str.size() && str[i] != end) {
+		lexeme.push_back(str[i]);
+		i++;
+	}
+	lexemes.push_back(lexeme);
+	i++;
+	return i;
+}
+
 int main()
 {
-	
+	getline(cin, str);
+	str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+
+	int index = 0;
+	while(index < str.size()) {
+		index = extract(index);
+	}
+
+	for (int i = 0; i < lexemes.size(); ++i)
+	{
+		/* code */
+		cout<<"<"<<lexemes[i]<<">\n";
+	}
+
+	return 0;
 }

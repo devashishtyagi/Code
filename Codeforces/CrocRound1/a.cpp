@@ -69,5 +69,50 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
+	int n;
+	queue< pair<int,int> > Q1, Q2;
+	int size = 0, t= 1;
+	sf(n);
 	
+	for(int i = 0; i < n; i++) {
+		int t,c;
+		sf(t); sf(c);
+		Q1.push(make_pair(t,c));
+	}
+
+	int maxsize = 0, prev_t = 1;
+	while(!Q1.empty() || !Q2.empty()) {
+		int next_t = -1;
+		if (!Q2.empty()) {
+			next_t = t + Q2.front().second;
+		}
+		if (!Q1.empty()) {
+			if (next_t == -1) {
+				next_t = Q1.front().first;
+			}
+			else {
+				next_t = min(Q1.front().first, next_t);	
+			}
+		}
+		if (!Q2.empty()) {
+			Q2.front().second -= (next_t - t);
+			size -= (next_t - t);
+			if (Q2.front().second == 0)
+				Q2.pop();
+		}
+		if (!Q1.empty()) {
+			if (t == Q1.front().first) {
+				Q2.push(Q1.front());
+				size += Q1.front().second;
+				Q1.pop();
+			}
+		}
+		maxsize = max(size, maxsize);
+		t = next_t;
+	}
+
+	cout<<t<<" "<<maxsize<<endl;
+
+	return 0;
 }
+

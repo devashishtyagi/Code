@@ -42,32 +42,45 @@
 using namespace std;
 typedef long long LL;
 
-string convertInt(int number)
-{
-   stringstream ss;//create a stringstream
-   ss << number;//add number to the stream
-   return ss.str();//return a string with the contents of the stream
-}
-
-int convertString(string s)
-{
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
-}
-
-int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
-
 int main()
 {
-	
+	int t;
+	cin>>t;
+	while(t--) {
+		int n;
+		cin>>n;
+		vector< pair<int,int> > B(n);
+		for(int i = 0; i < n; i++)
+			cin>>B[i].second>>B[i].first;
+		
+		sort(B.begin(), B.end());
+		
+		map<int,int> mymap;
+		int t = 0;
+		for(int i = 0; i < n; i++){
+			if (mymap.find(B[i].second) == mymap.end()) {
+				mymap[B[i].second] = t;
+				B[i].second = t++;
+			}
+			else {
+				B[i].second = mymap[B[i].second];
+			}
+		}
+
+		int distinct = 0;
+		long long ans = 0;
+		vector<bool> seen(t, false);
+		for(int i = 0; i < n; i++) {
+			if (seen[B[i].second]) {
+				ans += B[i].first*1LL*t;
+			}
+			else {
+				seen[B[i].second] = true;
+				distinct++;
+				ans += B[i].first*1LL*distinct;
+			}
+		}
+		cout<<ans<<endl;
+	}
+	return 0;
 }

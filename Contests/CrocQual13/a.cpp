@@ -51,23 +51,66 @@ string convertInt(int number)
 
 int convertString(string s)
 {
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
+    int num;
+    stringstream sstr(s); // create a stringstream
+    sstr>>num; // push the stream into the num
+    return num;
 }
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	
+	int n;
+	sf(n);
+	std::vector<int> id(n);
+
+	for (int i = 0; i < n; ++i)
+	{
+		/* code */
+		sf(id[i]);
+	}
+
+	std::map<int, int> mymap;
+	mymap[0] = 0;
+	int t = 1;
+
+	for (int i = 0; i < n; ++i)
+	{
+		/* code */
+		if (mymap.find(id[i]) == mymap.end()) {
+			mymap[id[i]] = t;
+			id[i] = t++;
+		}
+		else {
+			id[i] = mymap[id[i]];
+		}
+	}
+
+	std::vector<int> v(t,0);
+	bool valid = true;
+	int calls = 0;
+
+	for (int i = 0; i < n; ++i)
+	{
+		/* code */
+		if (id[i] != 0) {
+			if (v[id[i]] == 2) {
+				valid = false;
+				break;
+			}
+			else {
+				if (v[id[i]] == 1)
+					calls++;
+				v[id[i]]++;
+			}
+		}
+	}
+
+	if (valid)
+		pf(calls);
+	else
+		pf(-1);
+
+	return 0;
 }

@@ -69,5 +69,14 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	
+	int k;
+	cin>>k;
+	long long a[k];
+	long long n = 0;
+	FOR(i, 0, k){
+		cin>>a[i];
+		n += a[i];
+	}	
+	cout<<n<<endl;
+	return 0;
 }

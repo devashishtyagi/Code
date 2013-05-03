@@ -40,7 +40,7 @@
 #define PI 3.1415926535897932
 
 using namespace std;
-typedef long long LL;
+typedef long long ll;
 
 string convertInt(int number)
 {
@@ -51,23 +51,47 @@ string convertInt(int number)
 
 int convertString(string s)
 {
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
+    int num;
+    stringstream sstr(s); // create a stringstream
+    sstr>>num; // push the stream into the num
+    return num;
 }
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	
+	int t;
+	cin>>t;
+	for(int k = 1; k <= t; k++) {
+		int n,m;
+		cin>>n>>m;
+		int a[n][m];
+		for(int i = 0; i < n; i++)
+			for(int j = 0; j < m; j++)
+				cin>>a[i][j];
+		int mrow[n], mcol[m];
+		CLEAR(mrow); CLEAR(mcol);
+		for(int i = 0; i < n; i++){
+			for(int j = 0; j < m; j++){
+				mrow[i] = max(mrow[i], a[i][j]);
+				mcol[j] = max(mcol[j], a[i][j]);
+			}
+		}
+		bool possible = true;
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < m; j++){
+				if (a[i][j] != mrow[i] && a[i][j] != mcol[j])
+					possible = false;
+			}
+		}
+		cout<<"Case #"<<k<<": ";
+		if (possible){
+			cout<<"YES"<<endl;
+		}
+		else {
+			cout<<"NO"<<endl;
+		}
+	}
+	return 0;
 }

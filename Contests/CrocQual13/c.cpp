@@ -51,14 +51,14 @@ string convertInt(int number)
 
 int convertString(string s)
 {
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
+    int num;
+    stringstream sstr(s); // create a stringstream
+    sstr>>num; // push the stream into the num
+    return num;
 }
 
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
+	std::stringstream ss(s);
 	std::string item;
 	while (std::getline(ss, item, delim)) {
 	    elems.push_back(item);
@@ -69,5 +69,53 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
+	int n,k;
+	sf(n); sf(k);
 	
+	vector<long long> ips(n);
+
+	for (int i = 0; i < n; ++i)
+	{
+		string ip;
+		long long num = 0;
+		vector<string> elems;
+		cin>>ip;
+		split(ip, '.', elems);
+		for(int j = 0; j < 4; j++) {
+			num = num*256 + convertString(elems[j]);
+		}
+		ips[i] = num;
+	}
+
+	map<long long, int> mymap;
+	int subnet = -1;
+	long long mask = (1LL<<31);
+	for(int i = 1; i < 32; i++) {
+		mymap.clear();
+		for(int j = 0; j < n; j++) {
+			long long network = mask & ips[j];
+			mymap[network] = 1;
+		}
+		if (mymap.size() == k) {
+			subnet = i;
+			break;
+		}
+		mask = (mask>>1) + (1LL<<31);
+	}
+
+	if (subnet == -1) {
+		pf(-1);
+	}
+	else{
+		vector<int> ans;
+		for(int i = 0; i < 4; i++) {
+			ans.push_back(mask%256);
+			mask = mask/256;
+		}
+		cout<<ans[3];
+		for(int i = 2; i >= 0; i--)
+			cout<<"."<<ans[i];
+		cout<<endl;
+	}
+	return 0;
 }

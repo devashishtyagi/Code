@@ -67,7 +67,54 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
+int l, r;
+bool visited[500];
+vector< vector<int> > graph;
+vector< vector<int> > number;
+
+void dfs(int v) {
+	visited[v] = true;
+	for(int i = 0; i < graph[v].size(); i++) {
+		int to = graph[v][i];
+		int num = number[v][i];
+		if ((num >= l && num <= r) || visited[to])
+			continue;
+		dfs(to);
+	}
+}
+
 int main()
 {
-	
+	int n, m;
+	sf(n); sf(m);
+	graph.resize(n);
+	number.resize(n);
+
+	for(int i = 0; i < m; i++) {
+		int x,y;
+		sf(x); sf(y);
+		x--; y--;
+		graph[x].push_back(y);
+		graph[y].push_back(x);
+		number[x].push_back(i+1);
+		number[y].push_back(i+1);
+	}
+
+	int k;
+	sf(k);
+
+	for(int i = 0; i < k; i++) {
+		memset(visited, false, sizeof visited);
+		sf(l); sf(r);
+		int parts = 0;
+		for(int j = 0; j < n; j++) {
+			if (!visited[j]){
+				dfs(j);
+				parts++;
+			}
+		}
+		pf(parts);
+	}
+
+	return 0;
 }
