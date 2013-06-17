@@ -67,15 +67,13 @@ int main()
 		maxYL[i] = max(maxYL[i-1], points[i].second);
 	}
 
-	minYR[0] = points[n-1].second; maxYR[0] = points[n-1].second;
-
-	rforn(i, n-1, 1) {
+	minYR[n-1] = points[n-1].second; maxYR[n-1] = points[n-1].second;
+	rforn(i, n-1, 0) {
 		minYR[i] = min(minYR[i+1], points[i].second);
 		maxYR[i] = max(maxYR[i+1], points[i].second);
 	}
 
 	LL L = 0, R = 2*INF;
-	double viable = R;
 
 	while(L < R) {
 		LL S = (L+R)/2;
@@ -113,14 +111,13 @@ int main()
 
 		if (can) {
 			R = S;
-			viable = S;
 		}
 		else{
 			L = S+1;
 		}
 	}
 
-	printf("%.8lf\n", (double)viable*0.5);
+	printf("%.8lf\n", (double)L*0.5);
 
 	return 0;
 }

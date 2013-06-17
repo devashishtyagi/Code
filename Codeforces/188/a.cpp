@@ -28,8 +28,8 @@
 #define vi vector<int>
 #define all(v) v.begin(),v.end()
 
-#define pb push_back
-#define mp make_pair
+#define PB push_back
+#define MP make_pair
 #define sz(a) (int)(a).size()
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
@@ -37,88 +37,38 @@
 #define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
+#define MOD 1000000009
 #define PI 3.1415926535897932
 
 using namespace std;
 typedef long long LL;
-
-string convertInt(int number)
-{
-   stringstream ss;//create a stringstream
-   ss << number;//add number to the stream
-   return ss.str();//return a string with the contents of the stream
-}
-
-int convertString(string s)
-{
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
-}
-
-int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
 	LL x, y, m;
 	cin>>x>>y>>m;
 
-	if (m == 0) {
-		if (x < 0 && y < 0){
-			cout<<-1<<endl;
-			return 0;
-		}
-	}
-	else if (m > 0) {
-		if (x <= 0 && y <= 0) {
-			cout<<-1<<endl;
-			return 0;
-		}
-	}
-	else {
-		if (x >= 0 && y >= 0) {
-			cout<<-1<<endl;
-			return 0;
-		} 
-	}
 	if (x <= 0 && y <= 0) {
-		if (x >= m || y >= m){
+		if (m <= max(x,y))
 			cout<<0<<endl;
-			return 0;
-		}
-		else {
+		else
 			cout<<-1<<endl;
-			return 0;
-		}
+		return 0;
 	}
-
-	int op = 0;
 
 	if (x > y)
-		swap(x, y);
+		swap(x,y);
 
-	while(y <= 1E18 && y >= -1E18) {
-		if (y >= m)
-			break;
-		x += y;
+	long long op = 0;
+	while(y < m) {
+		long long mult = max(-x, 0LL)/y + 1;
+		op += mult;
+		x += mult*y;
 		if (x > y)
 			swap(x, y);
-		op++;
 	}
 
-	if (y >= m)
-		cout<<op<<endl;
-	else
-		cout<<-1<<endl;
+	cout<<op<<endl;
 
 	return 0;
 }
