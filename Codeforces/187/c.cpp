@@ -43,49 +43,50 @@
 using namespace std;
 typedef long long LL;
 
-LL tree[1000002];
-int MAXN = 1000000;
 
-void add(int i, int v) {
-	while(i <= MAXN) {
-		tree[i] += v;
-		if (tree[i] >= MOD)
-			tree[i] %= MOD;
-		i += (i & -i);
+const int MAXN = 1000002;
+int tree[MAXN];
+int q[MAXN];
+
+void add(int index, int v) {
+	while(index <= MAXN) {
+		tree[index] = ((LL)tree[index] + v)%MOD;
+		index += (index & -index);
 	}
 }
 
-int get(int i) {
-	LL sum = 0;
-	while(i > 0) {
-		sum += tree[i];
-		if (sum  >= MOD)
-			sum %= MOD;
-		i -= (i & -i);
+int get(int index) {
+	int sum = 0;
+	while(index > 0) {
+		sum = ((LL)tree[index]+sum)%MOD;
+		index -= (index & -index);
 	}
-	return (int)sum;
+	return sum;
 }
-
 
 
 int main()
 {
 	int n;
 	cin>>n;
+
+	init0(tree);
+	init0(q);
+
 	int a[n];
+
 	forn(i, 0, n)
 		cin>>a[i];
 
-	init0(tree);
-
 	forn(i, 0, n) {
-		int sum = get(a[i]);
-		sum = sum*1LL*a[i]%MOD;
-		sum = (sum + a[i])%MOD;
-		add(a[i], sum);
+		int new_val = ((LL)get(a[i])*1LL*a[i]%MOD + a[i])%MOD;
+		int change = ((LL)new_val - q[a[i]])%MOD;
+		if (change < 0)
+			change += MOD;
+		q[a[i]] = new_val;
+		add(a[i], change);
 	}
 
-	cout<<get(a[n-1])<<endl;
-
+	cout<<get(MAXN-1)<<endl;
 	return 0;
 }
