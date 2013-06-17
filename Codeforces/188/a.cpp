@@ -34,7 +34,7 @@
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
 #define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
-#define CLEAR(a) memset((a),0,sizeof(a))
+#define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
 #define PI 3.1415926535897932
@@ -69,40 +69,56 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	int p1, p2;
-	string s1, s2;
+	LL x, y, m;
+	cin>>x>>y>>m;
 
-	cin>>p1>>p2;
-	cin>>s1>>s2;
-
-	int l1 = s1.size();
-	int l2 = s2.size();
-
-	vector<int> add(l2, 0);
-	vector<int> go(l2, 0);
-
-	forn(j, 0, l2) {
-		add[j] = 0;
-		go[j] = j;
-		forn(i, 0, l1) {
-			if (s1[i] == s2[go[j]]) {
-				go[j]++;
-				if (go[j] == l2) {
-					add[j]++;
-					go[j] = 0;
-				}
-			}
+	if (m == 0) {
+		if (x < 0 && y < 0){
+			cout<<-1<<endl;
+			return 0;
+		}
+	}
+	else if (m > 0) {
+		if (x <= 0 && y <= 0) {
+			cout<<-1<<endl;
+			return 0;
+		}
+	}
+	else {
+		if (x >= 0 && y >= 0) {
+			cout<<-1<<endl;
+			return 0;
+		} 
+	}
+	if (x <= 0 && y <= 0) {
+		if (x >= m || y >= m){
+			cout<<0<<endl;
+			return 0;
+		}
+		else {
+			cout<<-1<<endl;
+			return 0;
 		}
 	}
 
-	int match = 0;
-	int index = 0;
-	forn(i, 0, p1) {
-		match += add[index];
-		index = go[index];
+	int op = 0;
+
+	if (x > y)
+		swap(x, y);
+
+	while(y <= 1E18 && y >= -1E18) {
+		if (y >= m)
+			break;
+		x += y;
+		if (x > y)
+			swap(x, y);
+		op++;
 	}
 
-	cout<<match/p2<<endl;
+	if (y >= m)
+		cout<<op<<endl;
+	else
+		cout<<-1<<endl;
 
 	return 0;
 }

@@ -34,7 +34,7 @@
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
 #define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
-#define CLEAR(a) memset((a),0,sizeof(a))
+#define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
 #define PI 3.1415926535897932
@@ -69,40 +69,55 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	int p1, p2;
-	string s1, s2;
+	string s;
+	cin>>s;
 
-	cin>>p1>>p2;
-	cin>>s1>>s2;
+	int n;
+	cin>>n;
+	vector<string> p(n);
+	vector<int> l(n);
+	vector<int> r(n);
 
-	int l1 = s1.size();
-	int l2 = s2.size();
+	forn(i, 0, n){
+		cin>>p[i]>>l[i]>>r[i];
+	}	
 
-	vector<int> add(l2, 0);
-	vector<int> go(l2, 0);
-
-	forn(j, 0, l2) {
-		add[j] = 0;
-		go[j] = j;
-		forn(i, 0, l1) {
-			if (s1[i] == s2[go[j]]) {
-				go[j]++;
-				if (go[j] == l2) {
-					add[j]++;
-					go[j] = 0;
+	int count = 0;
+	map<string, bool> mymap;
+	forn(i, 0, s.size()) {
+		forn(j, i, s.size()) {
+			string sub = s.substr(i, j-i+1);
+			//cout<<sub<<endl;
+			if (mymap.find(sub) == mymap.end()) {
+				mymap[sub] = true;
+				bool satisfied = true;
+				forn(k, 0, n) {
+					int occ = 0;
+					forn(x, 0, (int)p[k].size()-(int)sub.size() + 1) {
+						//cout<<"I am here"<<endl;
+						bool found = true;
+						forn(y, 0, sub.size()) {
+							if (sub[y] != p[k][x+y]){
+								found = false;
+								break;
+							}
+						}
+						if (found)
+							occ++;
+					}
+					//cout<<p[k]<<" "<<occ<<endl;
+					if (!(occ >= l[k] && occ <= r[k])){
+						satisfied = false;
+						break;
+					}
 				}
+				if (satisfied)
+					count++;
 			}
 		}
 	}
 
-	int match = 0;
-	int index = 0;
-	forn(i, 0, p1) {
-		match += add[index];
-		index = go[index];
-	}
-
-	cout<<match/p2<<endl;
+	cout<<count<<endl;
 
 	return 0;
 }

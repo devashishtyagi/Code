@@ -28,13 +28,13 @@
 #define vi vector<int>
 #define all(v) v.begin(),v.end()
 
-#define pb push_back
-#define mp make_pair
+#define PB push_back
+#define MP make_pair
 #define sz(a) (int)(a).size()
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
 #define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
-#define CLEAR(a) memset((a),0,sizeof(a))
+#define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
 #define PI 3.1415926535897932
@@ -69,40 +69,72 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	int p1, p2;
-	string s1, s2;
 
-	cin>>p1>>p2;
-	cin>>s1>>s2;
+	ifstream fin;
+	ofstream fout;
+	fin.open("Input.txt");
+	fout.open("Output.txt");
 
-	int l1 = s1.size();
-	int l2 = s2.size();
+	int n;
+	fin>>n;
+	string str;
+	fin>>str;
 
-	vector<int> add(l2, 0);
-	vector<int> go(l2, 0);
+	int q[n+1];
+	q[n] = 0;
+	int count = 0;
 
-	forn(j, 0, l2) {
-		add[j] = 0;
-		go[j] = j;
-		forn(i, 0, l1) {
-			if (s1[i] == s2[go[j]]) {
-				go[j]++;
-				if (go[j] == l2) {
-					add[j]++;
-					go[j] = 0;
+	for(int i = n-1; i >= 0; i--) {
+		q[i] = q[i+1] + ((str[i] == '*') ? 1 : 0);
+		if (str[i] == '*')
+			count++;
+	}
+
+	for(int i = 0; i < n+1; i++)
+		q[i] = 2*q[i] + i;
+
+	int max_op = 0;
+	int l = 0, r = 0;
+	int max_l = 0;
+
+	for(int i = 1; i < n+1; i++) {
+		if (q[i] - q[max_l] < max_op) {
+			max_op = q[i] - q[max_l];
+			l = max_l;
+			r = i;
+		}
+		if (q[i] > q[max_l])
+			max_l = i;
+	}
+
+	if (max_op + count + 2 >= count) {
+		fout<<count<<endl;
+		bool first = true;
+		for(int i = 0; i < n; i++){
+			if (str[i] == '*') {
+				if (!first)
+					fout<<"Ctrl+"<<i+1<<endl;
+				else {
+					fout<<i+1<<endl;
+					first = false;
 				}
 			}
 		}
 	}
-
-	int match = 0;
-	int index = 0;
-	forn(i, 0, p1) {
-		match += add[index];
-		index = go[index];
+	else {
+		fout<<max_op+count+2<<endl;
+		fout<<l+1<<endl;
+		fout<<"Shift+"<<r<<endl;
+		for(int i = 0; i < l; i++) 
+			if (str[i] == '*')
+				fout<<"Ctrl+"<<i+1<<endl;
+		for(int i = r; i < n; i++)
+			if (str[i] == '*')
+				fout<<"Ctrl+"<<i+1<<endl;
+		for(int i = l; i < r; i++)
+			if (str[i] != '*')
+				fout<<"Ctrl+"<<i+1<<endl;
 	}
-
-	cout<<match/p2<<endl;
 
 	return 0;
 }

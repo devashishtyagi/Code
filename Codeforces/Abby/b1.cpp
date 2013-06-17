@@ -34,7 +34,7 @@
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
 #define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
-#define CLEAR(a) memset((a),0,sizeof(a))
+#define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
 #define PI 3.1415926535897932
@@ -67,42 +67,77 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
-int main()
-{
-	int p1, p2;
-	string s1, s2;
+vector<int> a;
+vector<int> b;
+vector<bool> visited;
 
-	cin>>p1>>p2;
-	cin>>s1>>s2;
+int dfsa(int v) {
+	visited[v] = true;
+	if (a[v] == -1)
+		return 1;
+	return 1+dfsa(a[v]);
+}
 
-	int l1 = s1.size();
-	int l2 = s2.size();
+void dfsb(int v) {
+	visited[v] = true;
+	if (b[v] == -1)
+		return;
+	dfsb(b[v]);
+}
 
-	vector<int> add(l2, 0);
-	vector<int> go(l2, 0);
+int main() {
+	int n, x;
+	cin>>n>>x;
+	x--;
 
-	forn(j, 0, l2) {
-		add[j] = 0;
-		go[j] = j;
-		forn(i, 0, l1) {
-			if (s1[i] == s2[go[j]]) {
-				go[j]++;
-				if (go[j] == l2) {
-					add[j]++;
-					go[j] = 0;
+	a.resize(n);
+	b.resize(n, -1);
+	visited.resize(n, false);
+
+	forn(i, 0, n) {
+		cin>>a[i];
+		a[i]--;
+		if (a[i] >= 0)
+			b[a[i]] = i;
+	}
+
+	int pos = dfsa(x);
+	dfsb(x);
+	vector<int> lengths;
+
+	forn(i, 0, n) {
+		if (b[i] == -1 && !visited[i]) {
+			lengths.push_back(dfsa(i));
+		} 
+	}
+
+	if (lengths.size() > 0) {
+		bool dp[lengths.size()][1001];
+		memset(dp, false, sizeof dp);
+
+		dp[0][0] = true;
+		dp[0][lengths[0]] = true;
+
+		forn(i, 1, lengths.size()) {
+			forn(j, 0, 1001) {
+				if (j >= lengths[i]) {
+					dp[i][j] = (dp[i-1][j] | dp[i-1][j-lengths[i]]);
+				}
+				else{
+					dp[i][j] = dp[i-1][j];
 				}
 			}
 		}
-	}
 
-	int match = 0;
-	int index = 0;
-	forn(i, 0, p1) {
-		match += add[index];
-		index = go[index];
+		forn(i, 0, 1001) {
+			if (dp[lengths.size()-1][i]) {
+				cout<<pos+i<<endl;
+			}
+		}
 	}
-
-	cout<<match/p2<<endl;
+	else {
+		cout<<pos<<endl;
+	}
 
 	return 0;
 }

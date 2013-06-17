@@ -34,7 +34,7 @@
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
 #define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
-#define CLEAR(a) memset((a),0,sizeof(a))
+#define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
 #define PI 3.1415926535897932
@@ -69,40 +69,41 @@ int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
 int main()
 {
-	int p1, p2;
-	string s1, s2;
+	string code;
+	cin>>code;
 
-	cin>>p1>>p2;
-	cin>>s1>>s2;
+	int count = 10;
+	int tenCount = 0;
+	LL rest = 1;
+	vector<bool> found(26, false);
 
-	int l1 = s1.size();
-	int l2 = s2.size();
-
-	vector<int> add(l2, 0);
-	vector<int> go(l2, 0);
-
-	forn(j, 0, l2) {
-		add[j] = 0;
-		go[j] = j;
-		forn(i, 0, l1) {
-			if (s1[i] == s2[go[j]]) {
-				go[j]++;
-				if (go[j] == l2) {
-					add[j]++;
-					go[j] = 0;
-				}
+	forn(i, 0, code.length()) {
+		char c = code.at(i);
+		if (c >= 'A' && c <= 'J') {
+			if (!found[c-'A']) {
+				if (i == 0)
+					rest = rest*9;
+				else
+					rest = rest*count;
+				count--;
+				found[c-'A'] = true;
+			}
+		}
+		else {
+			if (c == '?') {
+				if (i == 0)
+					rest = rest*9;
+				else
+					tenCount++;
 			}
 		}
 	}
 
-	int match = 0;
-	int index = 0;
-	forn(i, 0, p1) {
-		match += add[index];
-		index = go[index];
-	}
-
-	cout<<match/p2<<endl;
+	cout<<rest;
+	forn(i, 0, tenCount) {
+		cout<<0;
+	}	
+	cout<<endl;
 
 	return 0;
 }

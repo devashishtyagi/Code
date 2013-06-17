@@ -34,7 +34,7 @@
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
 #define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
-#define CLEAR(a) memset((a),0,sizeof(a))
+#define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
 #define PI 3.1415926535897932
@@ -67,42 +67,30 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
+bool check(vector<int> a, int M) {
+	forn(i, 0, a.size()-1) {
+		if (a[i] + a[i+1] > M)
+			return false;
+	}
+	return true;
+}
+
 int main()
 {
-	int p1, p2;
-	string s1, s2;
-
-	cin>>p1>>p2;
-	cin>>s1>>s2;
-
-	int l1 = s1.size();
-	int l2 = s2.size();
-
-	vector<int> add(l2, 0);
-	vector<int> go(l2, 0);
-
-	forn(j, 0, l2) {
-		add[j] = 0;
-		go[j] = j;
-		forn(i, 0, l1) {
-			if (s1[i] == s2[go[j]]) {
-				go[j]++;
-				if (go[j] == l2) {
-					add[j]++;
-					go[j] = 0;
-				}
+	forn(i, 3, 7) {
+		forn(j, i+1, 2*i) {
+			vector<int> perm;
+			forn(k, 1, i+1) {
+				perm.pb(k);
 			}
+			int count = 0;
+			do {
+				if (check(perm, j))
+					count++;
+			}while(next_permutation(perm.begin(), perm.end()));
+			cout<<i<<" "<<j<<endl;
+			cout<<count<<endl;
 		}
 	}
-
-	int match = 0;
-	int index = 0;
-	forn(i, 0, p1) {
-		match += add[index];
-		index = go[index];
-	}
-
-	cout<<match/p2<<endl;
-
 	return 0;
 }

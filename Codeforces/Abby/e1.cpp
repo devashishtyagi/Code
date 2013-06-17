@@ -34,9 +34,10 @@
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
 #define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
-#define CLEAR(a) memset((a),0,sizeof(a))
+#define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
+#define MOD 1000000000
 #define PI 3.1415926535897932
 
 using namespace std;
@@ -67,42 +68,54 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
+LL f[200001];
+
+void init() {
+	f[0] = 1;
+	f[1] = 1;
+	forn(i, 2, 200001) {
+		f[i] = (f[i-1] + f[i-2])%MOD;
+	}
+}
+
 int main()
 {
-	int p1, p2;
-	string s1, s2;
+	int n, m;
+	cin>>n>>m;
 
-	cin>>p1>>p2;
-	cin>>s1>>s2;
+	LL a[n];
+	forn(i, 0, n)
+		cin>>a[i];
 
-	int l1 = s1.size();
-	int l2 = s2.size();
+	init();	
 
-	vector<int> add(l2, 0);
-	vector<int> go(l2, 0);
-
-	forn(j, 0, l2) {
-		add[j] = 0;
-		go[j] = j;
-		forn(i, 0, l1) {
-			if (s1[i] == s2[go[j]]) {
-				go[j]++;
-				if (go[j] == l2) {
-					add[j]++;
-					go[j] = 0;
-				}
+	forn(i, 0, m) {
+		int t;
+		cin>>t;
+		if (t == 1) {
+			int x, v;
+			cin>>x>>v;
+			x--;
+			a[x] = v;
+		}
+		else if (t == 2) {
+			int l, r;
+			cin>>l>>r;
+			l--; r--;
+			LL ans = 0;
+			forn(i, 0, r-l+1) {
+				//cout<<f[i]<<endl;
+				ans = (ans + (f[i]*a[l+i])%MOD)%MOD;
+			}
+			cout<<ans<<endl;
+		}
+		else {
+			int l, r, d;
+			cin>>l>>r>>d;
+			forn(i, l, r+1) {
+				a[i] += d;
 			}
 		}
-	}
-
-	int match = 0;
-	int index = 0;
-	forn(i, 0, p1) {
-		match += add[index];
-		index = go[index];
-	}
-
-	cout<<match/p2<<endl;
-
+	}	
 	return 0;
 }

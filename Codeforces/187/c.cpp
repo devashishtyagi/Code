@@ -28,8 +28,8 @@
 #define vi vector<int>
 #define all(v) v.begin(),v.end()
 
-#define pb push_back
-#define mp make_pair
+#define PB push_back
+#define MP make_pair
 #define sz(a) (int)(a).size()
 
 #define forn(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
@@ -37,37 +37,55 @@
 #define init0(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
+#define MOD 1000000007
 #define PI 3.1415926535897932
 
 using namespace std;
 typedef long long LL;
 
-string convertInt(int number)
-{
-   stringstream ss;//create a stringstream
-   ss << number;//add number to the stream
-   return ss.str();//return a string with the contents of the stream
-}
+LL tree[1000002];
+int MAXN = 1000000;
 
-int convertString(string s)
-{
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
+void add(int i, int v) {
+	while(i <= MAXN) {
+		tree[i] += v;
+		if (tree[i] >= MOD)
+			tree[i] %= MOD;
+		i += (i & -i);
 	}
 }
 
-int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
+int get(int i) {
+	LL sum = 0;
+	while(i > 0) {
+		sum += tree[i];
+		if (sum  >= MOD)
+			sum %= MOD;
+		i -= (i & -i);
+	}
+	return (int)sum;
+}
+
+
 
 int main()
 {
-	
+	int n;
+	cin>>n;
+	int a[n];
+	forn(i, 0, n)
+		cin>>a[i];
+
+	init0(tree);
+
+	forn(i, 0, n) {
+		int sum = get(a[i]);
+		sum = sum*1LL*a[i]%MOD;
+		sum = (sum + a[i])%MOD;
+		add(a[i], sum);
+	}
+
+	cout<<get(a[n-1])<<endl;
+
+	return 0;
 }
