@@ -39,50 +39,40 @@
 #define INF 1000000000
 #define MOD 1000000009
 #define PI 3.1415926535897932
-#define MAXN ((1)<<(29))
 
 using namespace std;
 typedef long long LL;
 
-map<int, int> dp;
-
-int grundy(int nums, int choosen) {
-	vector<int> taken(nums+1, 0);
-
-	if (dp.find(choosen) != dp.end())
-		return dp[choosen];
-
-	for(int i = 0; i < nums; i++) {
-		if ((choosen>>i) & 1)
-			continue;
-		int newchoosen = choosen;
-		int element = i+1;
-		while(element <= nums) {
-			if (!((newchoosen>>(element-1)) & 1))
-				newchoosen += (1<<(element-1));
-			element += (i+1);
-		}
-		taken[grundy(nums, newchoosen)]++;
-	}
-
-	int x = 0;
-	for(int i = 0; i < taken.size(); i++) {
-		if (taken[x] > 0)
-			x++;
-		else
-			break;
-	}
-	
-	dp[choosen] = x;
-
-	return x;
-}
-
 int main()
 {
-	
-	for(int i = 1; i <= 29; i++) {
-		dp.clear();
-		cout<<grundy(i, 0)<<","<<endl;
+	int n;
+	cin>>n;
+	int a[n];
+
+	for(int i = 0; i < n; i++)
+		cin>>a[i];
+
+	int steps = 0;
+	stack< pair<int,int> > S;
+
+	S.push(mp(a[n-1], 0));
+
+	for(int i = n-2; i >= 0; i--) {
+		int killed = 0;
+
+		while(!S.empty() && S.top().first < a[i]){
+			int op = S.top().second;
+			S.pop();
+			killed += (max(0, op-killed-1) + 1);
+		}
+
+		steps = max(steps, killed);
+
+		S.push(mp(a[i], killed));
 	}
+
+	cout<<steps<<endl;
+
+
+	return 0;
 }
