@@ -28,12 +28,12 @@
 #define vi vector<int>
 #define all(v) v.begin(),v.end()
 
-#define PB push_back
-#define MP make_pair
+#define pb push_back
+#define mp make_pair
 #define sz(a) (int)(a).size()
 
 #define FOR(i,a,b) for(int (i) = (a); (i) < (b); ++(i))  
-#define RFOR(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
+#define rforn(i,a,b) for(int (i) = (a)-1; (i) >= (b); --(i))  
 #define CLEAR(a) memset((a),0,sizeof(a))
 
 #define INF 1000000000
@@ -42,56 +42,23 @@
 using namespace std;
 typedef long long LL;
 
-string convertInt(int number)
-{
-   stringstream ss;//create a stringstream
-   ss << number;//add number to the stream
-   return ss.str();//return a string with the contents of the stream
-}
-
-int convertString(string s)
-{
-  int num;
-  stringstream sstr(s); // create a stringstream
-  sstr>>num; // push the stream into the num
-  return num;
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-	    elems.push_back(item);
-	}
-}
-
 int modulo (int m, int n) { return m >= 0 ? m % n : ( n - abs ( m%n ) ) % n; }
 
-struct Point {
-	LL m, b;
-	Point(LL x, LL y) {
-		m = x;
-		b = y;
-	} 
-};
-
-vector<struct Point> optimal;
+vector< pair<LL,LL> > optimal;
 int ptr;
+LL dp[2][100001];
 
-void add(Point p) {
+void add(pair<LL,LL> p) {
 	if (optimal.size() < 2) {
 		optimal.push_back(p);
 	}
 	else {
 		int index = optimal.size() - 2;
-		Point p1 = optimal.at(index);
-		Point p2 = optimal.at(index+1);
-		double x1 = (double)(p.b - p1.b)/(double)(p1.m - p.m);
-		double x2 = (double)(p.b - p2.b)/(double)(p2.m - p.m);
-		if (x2 >= x1) {
+		pair<LL,LL> p1 = optimal.at(index);
+		pair<LL,LL> p2 = optimal.at(index+1);
+		if ((p.second - p2.second)*(p1.first - p.first) <= (p2.first - p.first)*(p.second - p1.second)) {
 			optimal.pop_back();
-			if (ptr > 0)
-				ptr--;
+			ptr = min(ptr, (int)optimal.size()-1);
 			add(p);
 		}
 		else {
@@ -105,57 +72,54 @@ void exchg() {
 	optimal.clear();
 }
 
-Point find(LL j) {
-	while(ptr < optimal.size() - 1  &&  (j*optimal[ptr].m + optimal[ptr].b) <= (j*optimal[ptr+1].m + optimal[ptr+1].b)){
+LL find(LL j) {
+	while(ptr < optimal.size() - 1  &&  (j*optimal[ptr].first + optimal[ptr].second) >= (j*optimal[ptr+1].first + optimal[ptr+1].second)){
 		ptr++;
 	}
-	return optimal[ptr];
+	return (j*optimal[ptr].first + optimal[ptr].second);
 }
 
 int main()
 {
 	int n, m, p;
-	cin>>n>>m>>p;
+	scanf("%d %d %d",&n,&m,&p);
 
-	LL D[n];
+	int D[n];
 	D[0] = 0;
 	FOR(i, 0, n-1) {
-		cin>>D[i+1];
+		scanf("%d",&D[i+1]);
 		D[i+1] += D[i];
 	}
 
-	vector<LL> times;
+	vector<LL> times(m);
 	LL total = 0;
 	FOR(i, 0, m) {
 		int s,t;
-		cin>>s>>t;
-		times.push_back(t - D[s-1]);
+		scanf("%d %d",&s,&t);
+		times[i] = t - D[s-1];
 		total += (t - D[s-1]);
 	}
 
 	sort(times.begin(), times.end());
 
-	LL dp[p][m];
-
+	int now = 0, prev = 1;
 	FOR(i, 0, m) {
-		dp[0][i] = (i+1)*times[i];
+		dp[now][i] = (i+1)*times[i];
 	}
 
 
 	FOR(i, 1, p) {
 		exchg();
+		swap(now, prev);
+		add(mp(1, 0));
 
-		add(Point(1, 0));
-
-		FOR(j, 0, m) {
-			add(Point(-j, dp[i-1][j]));
-			Point p = find(times[j]); 
-			dp[i][j] = times[j]*p.m + p.b + j*times[j];
-			cout<<i<<" "<<j<<" "<<dp[i][j]<<endl;	
+		FOR(j, 0, m) {		
+			add(mp(-j, dp[prev][j]));
+			dp[now][j] = find(times[j]) + j*times[j];
 		}
 	}
 
-	LL ans = dp[p-1][m-1];
+	LL ans = dp[now][m-1];
 	
 	cout<<ans-total<<endl;
 

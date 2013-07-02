@@ -3,8 +3,6 @@
  */
 
 #include <algorithm>
-#include <functional>
-#include <numeric>
 #include <iostream>
 #include <map>
 #include <queue>
@@ -45,7 +43,63 @@
 using namespace std;
 typedef long long LL;
 
+bool check(int a, int b) {
+	if (a == -2 || b == -2)
+		return false;
+	else if (a == -1 && b != -2)
+		return true;
+	else if (a != -2 && b == -1)
+		return true;
+	else if (a == b)
+		return true;
+	return false;
+}
+
 int main()
 {
+	int a, b;
+	cin>>a>>b;
 
+	int x = 0, y = 0;
+	string s;
+	cin>>s;
+
+	int xc[s.size()+1], yc[s.size()+1];
+	xc[0] = 0; yc[0] = 0;
+
+	for(int i = 0; i < s.size(); i++) {
+		if (s[i] == 'U')
+			y++;
+		if (s[i] == 'D')
+			y--;
+		if (s[i] == 'L')
+			x--;
+		if (s[i] == 'R')
+			x++;
+		xc[i+1] = x;
+		yc[i+1] = y;
+	}
+
+	for(int i = 0; i <= s.size(); i++) {
+		int adiv = -2, bdiv = -2;
+
+		if (x == 0 && a-xc[i] == 0)
+			adiv = -1;
+		else if (x != 0 && (a-xc[i])%x == 0 && (a-xc[i])/x >= 0)
+			adiv = (a-xc[i])/x;
+
+		if (y == 0 && b-yc[i] == 0)
+			bdiv = -1;
+		else if (y != 0 && (b-yc[i])%y == 0 && (b-yc[i])/y >= 0)
+			bdiv = (b-yc[i])/y;
+
+		if (check(adiv, bdiv)) {
+			cout<<"Yes"<<endl;
+			return 0;
+		}
+	}
+
+	cout<<"No"<<endl;
+
+	return 0;
 }
