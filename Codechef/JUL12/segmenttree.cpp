@@ -76,13 +76,12 @@ private:
 	void inc(int node, int upd) {
 		tree[node].l += upd;
 		tree[node].r += upd;
+		tree[node].upd += upd;
 	}
 
 	void pushUpdate(int node) {
 		inc(2*node, tree[node].upd);
 		inc(2*node+1, tree[node].upd);
-		tree[2*node].upd += tree[node].upd;
-		tree[2*node+1].upd += tree[node].upd;
 		tree[node].upd = 0;
 	}
 
@@ -105,12 +104,10 @@ private:
 	}
 
 	int get(int node, int l, int r, int a, int b) {
-		if (l > r || a > b)
+		if (l > r || a > b || l > b || r < a)
 			return 0;
 		else if (l == a && r == b)
 			return f(tree[node].gcd, tree[node].l);
-		else if (l > b && r < a)
-			return 0;
 
 		pushUpdate(node);
 
@@ -121,15 +118,12 @@ private:
 	}
 
 	void update(int node, int l, int r, int a, int b, int k) {
-		if (l > r || a > b)
+		if (l > r || a > b || l > b || r < a)
 			return;
 		else if (l == a && r == b) {
 			inc(node, k);
-			tree[node].upd += k;
 			return;
 		}
-		else if (l > b && r < a)
-			return;
 
 		pushUpdate(node);
 

@@ -112,6 +112,7 @@ int main()
 		else {
 			int l, r, d;
 			cin>>l>>r>>d;
+			l--; r--;
 			forn(i, l, r+1) {
 				a[i] += d;
 			}
