@@ -22,10 +22,6 @@
 #include <cstdlib>
 #include <cstring>
 
-
-// Compiler utility
-#define int_msb(x) ((31) - __builtin_clz(x))
-
 #define sf(a) scanf("%d",&a)
 #define ssf(a,b) scanf("%d %d",&a,&b)
 #define pf(a) printf("%d\n",a)
@@ -51,5 +47,5 @@ typedef long long LL;
 
 int main()
 {
-
+    	
 }

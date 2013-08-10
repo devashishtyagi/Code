@@ -51,5 +51,42 @@ typedef long long LL;
 
 int main()
 {
+	int n, q;
+	scanf("%d %d", &n, &q);
+	vector<int> A(n);
+	vector<int> B(n);
 
+	for(int i = 0; i < n; i++)
+		scanf("%d", &A[i]);
+	for(int i = 0; i < n; i++)
+		scanf("%d", &B[i]);
+
+	vector<double> X(n);
+	vector<double> Y(n);
+ 
+	for(int i = 0; i < n; i++) {
+		X[i] = (double)(A[i] - B[i])/2.0;
+		Y[i] = (double)(A[i] + B[i])/2.0;
+	}
+
+	while(q--) {
+		int l, r;
+		scanf("%d %d", &l, &r);
+		l--; r--;
+		vector<double> tx, ty;
+		for(int i = l; i <= r; i++)
+			tx.push_back(X[i]), ty.push_back(Y[i]);
+		sort(tx.begin(), tx.end());
+		sort(ty.begin(), ty.end());
+
+		int mid = (r-l+1)/2;
+
+		double ans = 0;
+		for(int i = 0; i < tx.size(); i++) {
+			ans += abs(tx[i] - tx[mid]);
+			ans += abs(ty[i] - ty[mid]);
+		}
+		printf("%lf\n", ans);			
+	}
+	return 0;
 }
