@@ -49,43 +49,39 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+long long gcd(long long a, long long b) {
+	if (a == 0)
+		return b;
+	else if (a > b)
+		return gcd(b, a);
+	else
+		return gcd(b%a, a);
+}
 
 int main()
 {
-	int n, q;
+	int n;
+	cin>>n;
 
-	scanf("%d %d", &n, &q);
+	vector<int> A(n);
+
+	for(int i = 0; i < n; i++)
+		cin>>A[i];
+
+	sort(A.begin(), A.end());
+
+	long long denom = n, num = 0;
 
 	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
-		}
-		indices[p].push_back(i);
+		int index = (lower_bound(A.begin(), A.end(), A[i]) - A.begin());
+		int p = index, q = n-index-1;
+		long long tnum = A[i] - q*2LL*A[i] + p*2LL*A[i];
+		num += tnum;
 	}
 
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
-	}
+	long long g = gcd(num, denom);
+
+	cout<<num/g<<" "<<denom/g<<endl;
 
 	return 0;
 }

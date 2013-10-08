@@ -49,43 +49,47 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
 
 int main()
 {
-	int n, q;
+	int n;
+	cin>>n;
+	vector<int> a(n);
+	vector<int> value;
+	for(int i = 0; i < n; i++)
+		cin>>a[i];
 
-	scanf("%d %d", &n, &q);
-
+	int c = 0;
 	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
+		for(int j = i+1; j < n; j++)
+			if (a[j] < a[i])
+				c++;
 
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
+		int a1 = 0, a2 = 0;
+		for(int j = 0; j < i; j++) {
+			if (a[j] > a[i])
+				a1++;
+			if (a[j] > -a[i])
+				a2++;
 		}
-		indices[p].push_back(i);
+		int b1 = 0, b2 = 0;
+		for(int j = i+1; j < n; j++) {
+			if (a[j] < a[i])
+				b1++;
+			if (a[j] < -a[i])
+				b2++;
+		}
+
+		cout<<i<<" "<<a1<<" "<<a2<<" "<<b1<<" "<<b2<<endl;
+
+		if (a2+b2-a1-b1 < 0) {
+			a[i] = -a[i];
+			c += (a2+b2-a1-b1);
+			cout<<"Inversed "<<i<<endl;
+		}
 	}
 
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
-	}
+	cout<<c<<endl;
 
 	return 0;
 }

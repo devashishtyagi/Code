@@ -49,42 +49,66 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+
+vector<int> moves;
+int dp[11][11][1001];
+int m;
+
+
+int dfs(int diff, int last, int n) {
+	if (n >= m)
+		return 1;
+
+	if (dp[diff][last][n] != -1)
+		return dp[diff][last][n];
+
+	int ans = 0;
+
+	for(int i = 0; i < moves.size(); i++) {
+		if (moves[i] != last && moves[i]-diff > 0)
+			ans |= dfs(moves[i]-diff, moves[i], n+1);
+	}
+	
+	dp[diff][last][n] = ans;
+
+	return dp[diff][last][n];
+}
+
+void reconstruct(int diff, int last, int n) {
+	
+	if (n >= m)
+		return;
+
+	for(int i = 0; i < moves.size(); i++) {
+		if (moves[i] != last && moves[i]-diff > 0 && (n+1 >= m || dp[moves[i]-diff][moves[i]][n+1] == 1)) {
+			cout<<moves[i]<<" ";
+			reconstruct(moves[i]-diff, moves[i], n+1);
+			return;
+		}			
+	}
+}
 
 int main()
 {
-	int n, q;
+	memset(dp, -1, sizeof dp);
 
-	scanf("%d %d", &n, &q);
+	string str;
+	cin>>str;
 
-	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
-		}
-		indices[p].push_back(i);
+	for(int i = 0; i < 10; i++) {
+		if (str[i] == '1')
+			moves.push_back(i+1);
 	}
 
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
+	cin>>m;
+
+	if (dfs(0, 0, 0) == 1) {
+		cout<<"YES"<<endl;
+		reconstruct(0, 0, 0);
+		cout<<endl;
+	}
+	else {
+		cout<<"NO"<<endl;
 	}
 
 	return 0;

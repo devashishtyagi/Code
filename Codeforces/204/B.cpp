@@ -49,43 +49,27 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
 
 int main()
 {
-	int n, q;
+	int n;
+	cin>>n;
+	vector<int> p(n);
 
-	scanf("%d %d", &n, &q);
+	for(int i = 0; i < n; i++)
+		cin>>p[i];
+
+	int c = 0;
 
 	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
-		}
-		indices[p].push_back(i);
-	}
-
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
+		for(int j = i+1; j < n; j++) {
+			if (p[i] > p[j])
+				c++;
 		}
 	}
+
+	double ans = 4*(c/2) + (c%2 != 0);
+	printf("%.6lf\n", ans);
 
 	return 0;
 }

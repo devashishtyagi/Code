@@ -49,43 +49,42 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+
+int powmod(int a, int n) {
+	if (n == 0)
+		return 1;
+	else {
+		int x = powmod(a, n/2);
+		x = x*1LL*x%MOD;
+		if (n&1)
+			x = x*1LL*a%MOD;
+		return x;
+	}
+}
 
 int main()
 {
-	int n, q;
+	int n, m, k;
+	cin>>n>>m>>k;
 
-	scanf("%d %d", &n, &q);
+	int x = (n-m);
 
-	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
-		}
-		indices[p].push_back(i);
+	if ((k-1)*1LL*x >= m) {
+		cout<<m<<endl;
 	}
-
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
+	else {
+		int l = m - (k-1)*x;
+		int p = l/k;
+		int rem = l%k;
+		int ans = powmod(2, p+1);
+		//cout<<"Pow "<<ans<<endl;
+		ans = (ans - 2 + MOD)%MOD;
+		ans = ans*1LL*k%MOD;
+		//cout<<ans<<endl;
+		ans = (ans + rem)%MOD;
+		//cout<<ans<<endl;
+		ans = (ans + 0LL + (k-1)*x)%MOD;
+		cout<<ans<<endl;
 	}
-
 	return 0;
 }

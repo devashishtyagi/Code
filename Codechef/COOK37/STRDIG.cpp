@@ -49,42 +49,29 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+string toString(long long n) {
+	stringstream ss;
+	ss<<n;
+	return ss.str();
+}
+
+string str;
+
+bool test() {
+	
+}
 
 int main()
 {
-	int n, q;
+	int t;
+	cin>>t;
 
-	scanf("%d %d", &n, &q);
-
-	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
-		}
-		indices[p].push_back(i);
-	}
-
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
+	while(t--) {
+		cin>>str;
+		if (test())
+			cout<<"YES\n";
+		else
+			cout<<"NO\n";
 	}
 
 	return 0;

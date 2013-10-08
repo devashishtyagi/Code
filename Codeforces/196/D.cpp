@@ -49,42 +49,20 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+long long gcd(long long a, long long b) {
+	if (a == 0)
+		return b;
+	else
+		return gcd(b%a, a);
+}
 
 int main()
 {
-	int n, q;
-
-	scanf("%d %d", &n, &q);
-
-	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
+	for(int i = 1; i <= 6; i++) {
+		for(int j = 1; j <= 6; j++) {
+			cout<<gcd(i, j)<<" ";
 		}
-		indices[p].push_back(i);
-	}
-
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
+		cout<<endl;
 	}
 
 	return 0;

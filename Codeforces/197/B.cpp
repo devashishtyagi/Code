@@ -49,43 +49,33 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+int n;
+
+int dist(int i, int j) {
+	return (i-j+n)%n;
+}
 
 int main()
 {
-	int n, q;
+	int m;
+	cin>>n>>m;
 
-	scanf("%d %d", &n, &q);
+	vector<int> a(m);
 
-	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
-			}
-		}
-		indices[p].push_back(i);
+	for(int i = 0; i < m; i++){
+		cin>>a[i];
+		a[i]--;
 	}
 
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
+	int last = 0;
+	long long ans = 0;
+
+	for(int i = 0; i < m; i++) {
+		ans += dist(a[i], last);
+		last = a[i];
 	}
+
+	cout<<ans<<endl;
 
 	return 0;
 }

@@ -49,43 +49,72 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+vector<long long> a;
+int b[8];
+int primeCount;
+
+
+int findTree(int index, vector<int> tree) {
+	if (index == a.size()) {
+		int sum = 0;
+		int num = 0;
+		for(int i = 0; i < tree.size(); i++) {
+			if (tree[i] == -1) {
+				num++;
+				sum += b[i];
+			}
+		}
+		return (sum + (num>1) + (int)a.size() - primeCount);
+	}
+
+	int value = findTree(index+1, tree);
+
+	for(int i = 0; i < index; i++) {
+		long long prod = 1;
+		for(int j = 0; j < index; j++) {
+			if (tree[j] == i)
+				prod = prod*a[j];
+		}
+		prod = prod*a[index];
+		if (a[i]%prod == 0) {
+			tree[index] = i;
+			value = min(value, findTree(index+1, tree));
+		}
+	}
+	return value;
+}
+
 
 int main()
 {
-	int n, q;
+	int n;
+	cin>>n;
 
-	scanf("%d %d", &n, &q);
+	primeCount = 0;
+	a.resize(n);
+
+	for(int i = 0; i < n; i++)
+		cin>>a[i];
+
+	sort(a.rbegin(), a.rend());
 
 	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
-
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
+		long long x = a[i];
+		b[i] = 0;
+		for(int j = 2; j*1LL*j <= x; j++) {
+			while(x%j == 0) {
+				b[i]++;
+				x /= j;
 			}
 		}
-		indices[p].push_back(i);
+
+		if (x > 1)
+			b[i]++;
+		if (x == a[i])
+			primeCount++;
 	}
 
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
-	}
+	vector<int> tree(n, -1);
 
-	return 0;
+	cout<<findTree(0, tree)<<endl;
 }

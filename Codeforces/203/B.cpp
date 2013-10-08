@@ -49,43 +49,69 @@
 using namespace std;
 typedef long long LL;
 
-vector< vector<int> > indices(100001);
+vector<int> type;
+vector< vector<int> > ski;
+vector<bool> visited;
+vector<int> ans;
+
+int dfs(int v) {
+	if (visited[v])
+		return ans[v];
+
+	visited[v] = true;
+
+	if (type[v] == 1)
+		return ans[v] = 1;
+	if (ski[v].size() != 1)
+		return ans[v] = -INF;
+
+	return ans[v] = dfs(ski[v][0]) + 1;
+}
+
+void print(int v) {
+	if (type[v] == 1) {
+		cout<<v+1<<endl;
+		return;
+	}
+	cout<<v+1<<" ";
+	print(ski[v][0]);
+}
 
 int main()
 {
-	int n, q;
+	int n;
+	cin>>n;
+	
+	type.resize(n);
+	ski.resize(n);
+	visited.resize(n, false);
+	ans.resize(n);
 
-	scanf("%d %d", &n, &q);
+	for(int i = 0; i < n; i++)  {
+		cin>>type[i];
+	}
 
 	for(int i = 0; i < n; i++) {
-		int p;
-		scanf("%d", &p);
+		int a;
+		cin>>a;
+		if (a != 0)
+			ski[a-1].push_back(i);
+	}
 
-		for(int j = 2; j*j <= p; j++) {
-			if (p%j == 0) {
-				indices[j].push_back(i);
-				if (j*j != p)
-					indices[p/j].push_back(i);
+	int dist = -1, index = 0;
+
+	for(int i = 0; i < n; i++) {
+		if (!visited[i]) {
+			int d = dfs(i);
+			if (d > dist) {
+				dist = d;
+				index = i;
 			}
 		}
-		indices[p].push_back(i);
 	}
 
-	for(int i = 0; i < q; i++) {
-		int l, r, k;
-		scanf("%d %d %d", &l, &r, &k);
-		if (k != 1) {
-			l--; r--;
-			int first = (lower_bound(indices[k].begin(), indices[k].end(), l) - indices[k].begin());
-			first--;
-			int second = (lower_bound(indices[k].begin(), indices[k].end(), r+1) - indices[k].begin());
-			second--;
-			printf("%d\n", second-first);
-		}
-		else {
-			printf("%d\n", r-l+1);
-		}
-	}
+	cout<<dist<<endl;
+	print(index);
 
 	return 0;
 }
